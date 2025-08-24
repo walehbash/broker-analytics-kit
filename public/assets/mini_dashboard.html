@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Mini Broker Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 24px; }
+  .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+  #chart { width: 100%; height: 320px; }
+  button { padding: 8px 12px; margin-right: 8px; border-radius: 8px; border: 1px solid #ccc; background:#f8f8f8; cursor: pointer; }
+  button:hover { background:#eee; }
+</style>
+</head>
+<body>
+<h2>Mini Broker Dashboard (Interactive)</h2>
+<p>Toggle between <b>New Users</b>, <b>Profit</b>, and <b>Sentiment</b>. This is a lightweight, offline demo that works in any browser.</p>
+<div class="card">
+  <div>
+    <button onclick="setSeries('users')">New Users</button>
+    <button onclick="setSeries('profit')">Profit</button>
+    <button onclick="setSeries('sentiment')">Sentiment</button>
+  </div>
+  <svg id="chart" viewBox="0 0 800 320"></svg>
+</div>
+<script>
+// Minimal inline chart without external libraries
+const svg = document.getElementById('chart');
+const W=800, H=320, P=40;
+
+const data = {
+  users: [{"label": "2025-02-26", "value": 47.0}, {"label": "2025-03-01", "value": 52.0}, {"label": "2025-03-04", "value": 46.0}, {"label": "2025-03-07", "value": 46.0}, {"label": "2025-03-10", "value": 53.0}, {"label": "2025-03-13", "value": 55.0}, {"label": "2025-03-16", "value": 48.0}, {"label": "2025-03-19", "value": 54.0}, {"label": "2025-03-22", "value": 50.0}, {"label": "2025-03-25", "value": 44.0}, {"label": "2025-03-28", "value": 59.0}, {"label": "2025-03-31", "value": 49.0}, {"label": "2025-04-03", "value": 64.0}, {"label": "2025-04-06", "value": 60.0}, {"label": "2025-04-09", "value": 65.0}, {"label": "2025-04-12", "value": 50.0}, {"label": "2025-04-15", "value": 62.0}, {"label": "2025-04-18", "value": 49.0}, {"label": "2025-04-21", "value": 71.0}, {"label": "2025-04-24", "value": 56.0}, {"label": "2025-04-27", "value": 40.0}, {"label": "2025-04-30", "value": 61.0}, {"label": "2025-05-03", "value": 60.0}, {"label": "2025-05-06", "value": 61.0}, {"label": "2025-05-09", "value": 62.0}, {"label": "2025-05-12", "value": 53.0}, {"label": "2025-05-15", "value": 47.0}, {"label": "2025-05-18", "value": 69.0}, {"label": "2025-05-21", "value": 48.0}, {"label": "2025-05-24", "value": 64.0}, {"label": "2025-05-27", "value": 63.0}, {"label": "2025-05-30", "value": 70.0}, {"label": "2025-06-02", "value": 53.0}, {"label": "2025-06-05", "value": 73.0}, {"label": "2025-06-08", "value": 69.0}, {"label": "2025-06-11", "value": 62.0}, {"label": "2025-06-14", "value": 66.0}, {"label": "2025-06-17", "value": 62.0}, {"label": "2025-06-20", "value": 72.0}, {"label": "2025-06-23", "value": 62.0}, {"label": "2025-06-26", "value": 70.0}, {"label": "2025-06-29", "value": 66.0}, {"label": "2025-07-02", "value": 64.0}, {"label": "2025-07-05", "value": 72.0}, {"label": "2025-07-08", "value": 65.0}, {"label": "2025-07-11", "value": 63.0}, {"label": "2025-07-14", "value": 74.0}, {"label": "2025-07-17", "value": 57.0}, {"label": "2025-07-20", "value": 63.0}, {"label": "2025-07-23", "value": 53.0}, {"label": "2025-07-26", "value": 65.0}, {"label": "2025-07-29", "value": 56.0}, {"label": "2025-08-01", "value": 75.0}, {"label": "2025-08-04", "value": 70.0}, {"label": "2025-08-07", "value": 73.0}, {"label": "2025-08-10", "value": 77.0}, {"label": "2025-08-13", "value": 64.0}, {"label": "2025-08-16", "value": 85.0}, {"label": "2025-08-19", "value": 73.0}, {"label": "2025-08-22", "value": 68.0}],
+  profit: [{"label": "2025-02-26", "value": 833.87}, {"label": "2025-03-01", "value": 658.37}, {"label": "2025-03-04", "value": 1016.57}, {"label": "2025-03-07", "value": 618.49}, {"label": "2025-03-10", "value": 468.66}, {"label": "2025-03-13", "value": 929.0}, {"label": "2025-03-16", "value": 1318.34}, {"label": "2025-03-19", "value": 1176.47}, {"label": "2025-03-22", "value": 1415.11}, {"label": "2025-03-25", "value": 937.92}, {"label": "2025-03-28", "value": 999.25}, {"label": "2025-03-31", "value": 719.65}, {"label": "2025-04-03", "value": 880.11}, {"label": "2025-04-06", "value": 1414.01}, {"label": "2025-04-09", "value": 1362.47}, {"label": "2025-04-12", "value": 559.48}, {"label": "2025-04-15", "value": 1136.3}, {"label": "2025-04-18", "value": 850.35}, {"label": "2025-04-21", "value": 989.74}, {"label": "2025-04-24", "value": 789.83}, {"label": "2025-04-27", "value": 1095.46}, {"label": "2025-04-30", "value": 848.43}, {"label": "2025-05-03", "value": 1634.41}, {"label": "2025-05-06", "value": 1326.96}, {"label": "2025-05-09", "value": 1543.21}, {"label": "2025-05-12", "value": 1289.91}, {"label": "2025-05-15", "value": 925.13}, {"label": "2025-05-18", "value": 907.73}, {"label": "2025-05-21", "value": 1047.39}, {"label": "2025-05-24", "value": 840.82}, {"label": "2025-05-27", "value": 986.7}, {"label": "2025-05-30", "value": 1101.0}, {"label": "2025-06-02", "value": 836.71}, {"label": "2025-06-05", "value": 1065.19}, {"label": "2025-06-08", "value": 556.93}, {"label": "2025-06-11", "value": 977.54}, {"label": "2025-06-14", "value": 1157.13}, {"label": "2025-06-17", "value": 1694.82}, {"label": "2025-06-20", "value": 1080.89}, {"label": "2025-06-23", "value": 816.14}, {"label": "2025-06-26", "value": 902.56}, {"label": "2025-06-29", "value": 1130.85}, {"label": "2025-07-02", "value": 911.01}, {"label": "2025-07-05", "value": 1296.57}, {"label": "2025-07-08", "value": 1381.78}, {"label": "2025-07-11", "value": 1397.27}, {"label": "2025-07-14", "value": 1403.63}, {"label": "2025-07-17", "value": 1332.11}, {"label": "2025-07-20", "value": 1256.94}, {"label": "2025-07-23", "value": 1179.64}, {"label": "2025-07-26", "value": 1030.82}, {"label": "2025-07-29", "value": 953.48}, {"label": "2025-08-01", "value": 977.33}, {"label": "2025-08-04", "value": 649.95}, {"label": "2025-08-07", "value": 1684.95}, {"label": "2025-08-10", "value": 447.93}, {"label": "2025-08-13", "value": 767.85}, {"label": "2025-08-16", "value": 1613.41}, {"label": "2025-08-19", "value": 1032.54}, {"label": "2025-08-22", "value": 1095.86}],
+  sentiment: [{"label": "2025-05-27", "value": 0.322}, {"label": "2025-05-28", "value": 0.005}, {"label": "2025-05-29", "value": -0.015}, {"label": "2025-05-30", "value": 0.356}, {"label": "2025-05-31", "value": 0.63}, {"label": "2025-06-01", "value": 0.394}, {"label": "2025-06-02", "value": 0.121}, {"label": "2025-06-03", "value": -0.096}, {"label": "2025-06-04", "value": -0.18}, {"label": "2025-06-05", "value": 0.495}, {"label": "2025-06-06", "value": 0.82}, {"label": "2025-06-07", "value": -0.421}, {"label": "2025-06-08", "value": 0.253}, {"label": "2025-06-09", "value": 0.174}, {"label": "2025-06-10", "value": 0.611}, {"label": "2025-06-11", "value": 0.16}, {"label": "2025-06-12", "value": -0.106}, {"label": "2025-06-13", "value": 0.094}, {"label": "2025-06-14", "value": -0.024}, {"label": "2025-06-15", "value": 0.227}, {"label": "2025-06-16", "value": 0.07}, {"label": "2025-06-17", "value": 0.265}, {"label": "2025-06-18", "value": 0.015}, {"label": "2025-06-19", "value": 0.353}, {"label": "2025-06-20", "value": -0.301}, {"label": "2025-06-21", "value": 0.059}, {"label": "2025-06-22", "value": -0.125}, {"label": "2025-06-23", "value": -0.429}, {"label": "2025-06-24", "value": -0.088}, {"label": "2025-06-25", "value": -0.728}, {"label": "2025-06-26", "value": 0.052}, {"label": "2025-06-27", "value": -0.783}, {"label": "2025-06-28", "value": -1.0}, {"label": "2025-06-29", "value": -1.0}, {"label": "2025-06-30", "value": -0.462}, {"label": "2025-07-01", "value": -0.713}, {"label": "2025-07-02", "value": -0.394}, {"label": "2025-07-03", "value": -0.877}, {"label": "2025-07-04", "value": -0.202}, {"label": "2025-07-05", "value": -0.277}, {"label": "2025-07-06", "value": -0.48}, {"label": "2025-07-07", "value": 0.013}, {"label": "2025-07-08", "value": 0.057}, {"label": "2025-07-09", "value": -0.068}, {"label": "2025-07-10", "value": 0.32}, {"label": "2025-07-11", "value": 0.479}, {"label": "2025-07-12", "value": -0.21}, {"label": "2025-07-13", "value": 0.626}, {"label": "2025-07-14", "value": -0.122}, {"label": "2025-07-15", "value": 0.605}, {"label": "2025-07-16", "value": 0.729}, {"label": "2025-07-17", "value": 0.327}, {"label": "2025-07-18", "value": 0.415}, {"label": "2025-07-19", "value": 0.346}, {"label": "2025-07-20", "value": 0.157}, {"label": "2025-07-21", "value": 0.243}, {"label": "2025-07-22", "value": 0.698}, {"label": "2025-07-23", "value": 0.833}, {"label": "2025-07-24", "value": 0.466}, {"label": "2025-07-25", "value": 0.04}, {"label": "2025-07-26", "value": -0.051}, {"label": "2025-07-27", "value": 0.32}, {"label": "2025-07-28", "value": 0.1}, {"label": "2025-07-29", "value": 0.727}, {"label": "2025-07-30", "value": -0.092}, {"label": "2025-07-31", "value": 0.361}, {"label": "2025-08-01", "value": -0.195}, {"label": "2025-08-02", "value": -0.131}, {"label": "2025-08-03", "value": -0.019}, {"label": "2025-08-04", "value": 0.052}, {"label": "2025-08-05", "value": -0.052}, {"label": "2025-08-06", "value": -0.506}, {"label": "2025-08-07", "value": -0.297}, {"label": "2025-08-08", "value": -0.536}, {"label": "2025-08-09", "value": -1.0}, {"label": "2025-08-10", "value": -0.368}, {"label": "2025-08-11", "value": 0.023}, {"label": "2025-08-12", "value": 0.121}, {"label": "2025-08-13", "value": -0.373}, {"label": "2025-08-14", "value": -0.393}, {"label": "2025-08-15", "value": -1.0}, {"label": "2025-08-16", "value": 0.639}, {"label": "2025-08-17", "value": 0.155}, {"label": "2025-08-18", "value": -0.071}, {"label": "2025-08-19", "value": -0.296}, {"label": "2025-08-20", "value": -1.0}, {"label": "2025-08-21", "value": -0.133}, {"label": "2025-08-22", "value": -0.127}, {"label": "2025-08-23", "value": -0.634}, {"label": "2025-08-24", "value": 0.179}]
+};
+
+function scaleX(n, i, len){ return P + (i/(len-1))*(W-2*P); }
+function scaleY(vals, v){
+  const min = Math.min(...vals), max = Math.max(...vals);
+  if(max === min){ return H/2; }
+  return H - P - ((v-min)/(max-min))*(H-2*P);
+}
+
+function draw(seriesKey){
+  const vals = data[seriesKey].map(d => d.value);
+  const pts = data[seriesKey].map((d,i) => [scaleX(data[seriesKey].length, i, data[seriesKey].length), scaleY(vals, d.value)]);
+  svg.innerHTML = '';
+  // axes
+  const axes = document.createElementNS('http://www.w3.org/2000/svg','path');
+  axes.setAttribute('d', `M ${P} ${H-P} L ${W-P} ${H-P} M ${P} ${H-P} L ${P} ${P}`);
+  axes.setAttribute('stroke', '#555'); axes.setAttribute('fill','none');
+  svg.appendChild(axes);
+  // line
+  let d = '';
+  pts.forEach((p,i)=>{ d += (i===0? 'M':'L') + ' ' + p[0] + ' ' + p[1] + ' '; });
+  const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+  line.setAttribute('d', d);
+  line.setAttribute('stroke', '#2a6'); line.setAttribute('fill','none'); line.setAttribute('stroke-width','2');
+  svg.appendChild(line);
+  // title
+  const title = document.createElementNS('http://www.w3.org/2000/svg','text');
+  title.setAttribute('x', W/2); title.setAttribute('y', 24); title.setAttribute('text-anchor','middle');
+  title.textContent = seriesKey.charAt(0).toUpperCase() + seriesKey.slice(1);
+  svg.appendChild(title);
+}
+
+function setSeries(k){ draw(k); }
+setSeries('users');
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+import pandas as pd
+# df.head(), df.info(), df.describe(), df.groupby('col').agg({'val':'sum'})
